@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { logoutUser } from "../../store/actions/authActions";
-import TestBoxes from './TestBoxes/TestBoxes'
+import TestBoxes from '../../components/Layout/TestBoxes/TestBoxes'
 import Spinner from '../../components/UI/Spinner/Spinner'
-
 
 class Dashboard extends Component {
   state = {
@@ -17,7 +16,6 @@ class Dashboard extends Component {
     axios.get('/api/users/populate-tests/' + this.props.auth.user.id)
       .then(res => {
         this.setState({ tests: res.data.tests })
-        console.log(res.data.tests)
       })
       .catch(err => { })
   }
@@ -27,8 +25,6 @@ class Dashboard extends Component {
     console.log(this.state.tests)
     // this.props.logoutUser();
   };
-
-
 
   render() {
     let testBoxes = <Spinner />
