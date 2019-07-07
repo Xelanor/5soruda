@@ -13,7 +13,8 @@ class Test extends Component {
     givenAnswers: {},
     questionCount: 1,
     testStarted: false,
-    loading: false
+    loading: false,
+    testId: null,
   }
 
   answerClickedHandler = (answer) => {
@@ -26,10 +27,16 @@ class Test extends Component {
     this.setState({
       givenAnswers: updatedGivenAnswers
     })
-    setTimeout(() => {
-      console.log(this.state)
-    }, 1000);
 
+    const givenAnswers = {
+      updatedGivenAnswers: updatedGivenAnswers
+    }
+
+    console.log(updatedGivenAnswers)
+
+    axios.post('/api/tests/update-answers/' + this.state.testId, givenAnswers)
+      .then(res => console.log(res))
+      .catch((error) => { console.log(error); })
   }
 
   nextQuestionHandler = () => {
@@ -46,7 +53,7 @@ class Test extends Component {
     let userSolvedQuestionList = []
     let userCanSolveQuestionList = []
     let n = 1
-    await axios.get('/api/questions')
+    await axios.get('/api/questions') // Bütün Soruları AL
       .then(res => {
         if (res.data.length > 0) {
           res.data.map(q => {
@@ -57,7 +64,7 @@ class Test extends Component {
       .catch((error) => {
         console.log(error);
       })
-    await axios.get('/api/users/' + this.props.auth.user.id)
+    await axios.get('/api/users/' + this.props.auth.user.id) // Kullanıcının Testlerini Al
       .then(res => {
         if (res.data.tests.length > 0) {
           res.data.tests.map(q => {
@@ -69,7 +76,7 @@ class Test extends Component {
         console.log(error);
       })
     for (let i in userTestsList) {
-      await axios.get('/api/tests/' + userTestsList[i])
+      await axios.get('/api/tests/' + userTestsList[i]) // Kullanıcının Çözdüğü Soruları Bul
         .then(res => {
           res.data.questions.map(q => {
             userSolvedQuestionList.push(q.question)
@@ -145,7 +152,8 @@ class Test extends Component {
         })
     }
     console.log(this.state)
-    this.setState({ testStarted: true, loading: false })
+    console.log(testId._id)
+    this.setState({ testStarted: true, loading: false, testId: testId._id })
   }
 
   render() {

@@ -36,4 +36,10 @@ router.route('/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/update-answers/:id').post((req, res) => {
+  Test.findByIdAndUpdate(req.params.id, { $set: { givenAnswers: req.body.updatedGivenAnswers } })
+    .then(() => res.json('Test Updated!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+})
+
 module.exports = router;

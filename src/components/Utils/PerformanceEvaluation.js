@@ -10,7 +10,7 @@ const complicationRate = (props) => {
       }
       questionCount += 1
     })
-  const rate = answeredCount / questionCount
+  const rate = answeredCount / questionCount * 100
   return (
     <div>
       <p>{questionCount} sorudan {answeredCount} tanesini çözdün. <strong>%</strong>{rate}</p>
