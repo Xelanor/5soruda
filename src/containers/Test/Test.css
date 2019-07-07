@@ -1,0 +1,13 @@
+.content {
+  height: 70px;
+  width: 100%;
+  text-align: center;
+  background-color: white;
+  border-radius: 40px;
+  border: 2px solid;
+  color: #ee6e73;
+  border-color: #ffd7d8;
+  width: 100%;
+  font-weight: 600;
+  margin: 5px 0 20px 0;
+}

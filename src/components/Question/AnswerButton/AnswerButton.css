@@ -1,0 +1,29 @@
+.success {
+  background-color: green !important;
+}
+
+.fail {
+  background-color: red !important;
+}
+
+.answerButton {
+  background-color: white;
+  border-radius: 40px;
+  border: 2px solid;
+  color: #ee6e73;
+  border-color: #ffd7d8;
+  cursor: pointer;
+  width: 100%;
+  height: 30px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.answerButton:focus {
+  background-color: white;
+}
+
+.answerButton:hover {
+  border-color: #ff8284;
+  color: #fd2e35;
+}

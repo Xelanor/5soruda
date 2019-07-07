@@ -1,0 +1,13 @@
+.TestBox {
+  width: 100%;
+  height: auto;
+  background-color: white;
+  border: 0.5px solid gray;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+p {
+  border-right: 1px solid gray;
+}

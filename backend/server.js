@@ -1,6 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const bodyParser = require("body-parser");
+const passport = require("passport");
+
+const users = require("./routes/api/users");
+const questionsRouter = require("./routes/api/questions")
+const testsRouter = require("./routes/api/tests")
 
 require('dotenv').config();
 
@@ -10,19 +16,33 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const uri = process.env.ATLAS_URI;
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true })
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
+
+app.use(bodyParser.json());
+
+// DB Config
+const db = require("./config/keys").mongoURI;
+
+mongoose.connect(db, { useNewUrlParser: true, useCreateIndex: true })
 
 const connection = mongoose.connection;
 connection.once('open', () => {
   console.log("MongoDB database connection established successfully")
 })
 
-const exercisesRouter = require('./routes/exercises');
-const usersRouter = require('./routes/users');
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
+// Routes
+app.use("/api/users", users);
+app.use("/api/questions", questionsRouter);
+app.use("/api/tests", testsRouter);
 
-app.use('/exercises', exercisesRouter);
-app.use('/users', usersRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`)
