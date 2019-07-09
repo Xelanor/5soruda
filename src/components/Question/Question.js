@@ -43,9 +43,11 @@ const question = (props) => {
     })
   }
   let nextQuestionButton = null
+  let prevQuestionButton = null
   let watchVideo = null
   if (props.givenAnswers[questionCount] !== null) {
     nextQuestionButton = <button onClick={props.nextQuestion}>Sonraki Soru</button>
+    prevQuestionButton = <button onClick={props.prevQuestion}>Önceki Soru</button>
     watchVideo = <div>
       <h4>Hemen Sorunun Cevabını İzleyin</h4>
       <iframe width="560" height="315" src="https://www.youtube.com/embed/dpODFLDEXWw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -60,16 +62,12 @@ const question = (props) => {
         <h6><strong>Sorunun Değeri: </strong>{currentQuestion.value}</h6>
         <p> <strong>Konu: </strong>{currentQuestion.subject}</p>
         {nextQuestionButton}
+        {prevQuestionButton}
         <div className="content">
           {currentQuestion.content}
         </div>
         {answers}
         {watchVideo}
-      </React.Fragment>
-  } else {
-    content =
-      <React.Fragment>
-        <h1>Bitti</h1>
       </React.Fragment>
   }
 

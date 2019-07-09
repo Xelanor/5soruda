@@ -16,7 +16,8 @@ const testSchema = new Schema({
   givenAnswers: {
     type: Map,
     of: String
-  }
+  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "users" }
 }, {
     timestamps: true,
   })

@@ -6,7 +6,7 @@ import './TestBoxes.css'
 const testBoxes = (props) => {
   let testBoxes = Object.keys(props.data)
     .map(test => {
-      return <TestBox key={props.data[test]._id} compRate={props.compRate} tests={props.data[test]} />
+      return <TestBox key={props.data[test]._id} compRate={props.compRate} test={props.data[test]} />
     })
   return (
     <React.Fragment>

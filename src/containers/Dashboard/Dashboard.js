@@ -22,8 +22,8 @@ class Dashboard extends Component {
 
   onLogoutClick = e => {
     e.preventDefault();
-    console.log(this.state.tests)
-    // this.props.logoutUser();
+    // console.log(this.state.tests)
+    this.props.logoutUser();
   };
 
   render() {

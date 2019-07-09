@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import Question from '../../components/Question/Question'
 import './Test.css'
 import Spinner from '../../components/UI/Spinner/Spinner'
+import { TestResult } from '../../components/Utils/PerformanceEvaluation'
 
 class Test extends Component {
   state = {
@@ -13,8 +14,10 @@ class Test extends Component {
     givenAnswers: {},
     questionCount: 1,
     testStarted: false,
+    testFinished: false,
     loading: false,
     testId: null,
+    notEnoughQuestion: false
   }
 
   answerClickedHandler = (answer) => {
@@ -40,14 +43,25 @@ class Test extends Component {
   }
 
   nextQuestionHandler = () => {
+    if (this.state.questionCount === this.state.questions.length) {
+      this.setState({ testFinished: true, testStarted: false })
+    }
     this.setState({
       questionCount: this.state.questionCount + 1,
     })
   }
 
+  prevQuestionHandler = () => {
+    if (this.state.questionCount > 1) {
+      this.setState({
+        questionCount: this.state.questionCount + -1,
+      })
+    }
+  }
+
   testCreateHandler = async () => {
     this.setState({ loading: true })
-    const questionAmount = 5
+    const questionAmount = 10
     let questionList = []
     let userTestsList = []
     let userSolvedQuestionList = []
@@ -94,7 +108,8 @@ class Test extends Component {
     }
     let testArray = {
       givenAnswers: {},
-      questions: []
+      questions: [],
+      user: this.props.auth.user.id
     }
     for (let n in userCanSolveQuestionList) {
       let i = parseInt(n) + 1
@@ -110,50 +125,54 @@ class Test extends Component {
         questionNumber: i
       })
     }
-    let testId
-    await axios.post('/api/tests/add', testArray)
-      .then(res => testId = res.data)
-      .catch((err) => { console.log(err) })
 
-    const postToUserArray = {
-      id: this.props.auth.user.id,
-      test: testId
+    if (userCanSolveQuestionList < questionAmount) {
+      this.setState({ loading: false, notEnoughQuestion: true })
+
+    } else {
+      let testId
+      await axios.post('/api/tests/add', testArray)
+        .then(res => testId = res.data)
+        .catch((err) => { console.log(err) })
+
+      const postToUserArray = {
+        id: this.props.auth.user.id,
+        test: testId
+      }
+
+      await axios.post('/api/tests/add-test-to-user', postToUserArray)
+        .then(res => console.log(res))
+        .catch((error) => { console.log(error); })
+
+      let updatedState = {}
+
+      for (let n in userCanSolveQuestionList) {
+        await axios.get('/api/questions/' + userCanSolveQuestionList[n])
+          .then(res => {
+            let updatedArray
+            let questionArray
+            let i = parseInt(n) + 1
+            updatedState = [
+              ...this.state.questions
+            ]
+            questionArray = {
+              question: res.data,
+              questionNumber: i
+            }
+            updatedState.push(questionArray)
+
+            updatedArray = {
+              ...this.state.givenAnswers
+            }
+            updatedArray[i] = null
+            this.setState({ questions: updatedState, givenAnswers: updatedArray })
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
+      this.setState({ testStarted: true, loading: false, testId: testId._id })
     }
-
-    await axios.post('/api/tests/add-test-to-user', postToUserArray)
-      .then(res => console.log(res))
-      .catch((error) => { console.log(error); })
-
-    let updatedState = {}
-
-    for (let n in userCanSolveQuestionList) {
-      await axios.get('/api/questions/' + userCanSolveQuestionList[n])
-        .then(res => {
-          let updatedArray
-          let questionArray
-          let i = parseInt(n) + 1
-          updatedState = [
-            ...this.state.questions
-          ]
-          questionArray = {
-            question: res.data,
-            questionNumber: i
-          }
-          updatedState.push(questionArray)
-
-          updatedArray = {
-            ...this.state.givenAnswers
-          }
-          updatedArray[i] = null
-          this.setState({ questions: updatedState, givenAnswers: updatedArray })
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-    }
-    console.log(this.state)
-    console.log(testId._id)
-    this.setState({ testStarted: true, loading: false, testId: testId._id })
   }
 
   render() {
@@ -170,8 +189,16 @@ class Test extends Component {
         givenAnswers={this.state.givenAnswers}
         class={this.classHandler}
         nextQuestion={this.nextQuestionHandler}
+        prevQuestion={this.prevQuestionHandler}
       />
-    } else {
+    } else if (this.state.testFinished) {
+      page = <TestResult questions={this.state.questions} givenAnswers={this.state.givenAnswers} />
+    } else if (this.state.notEnoughQuestion) {
+      page = (
+        <h4>Hiç Görmediğiniz Soru Kalmadı</h4>
+      )
+    }
+    else {
       page = (
         <div>
           <h4>Hoşgeldiniz, Deneme sürümünde karşınıza matematik soruları gelecektir. </h4>

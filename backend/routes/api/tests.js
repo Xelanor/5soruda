@@ -16,7 +16,8 @@ router.route('/add').post((req, res) => {
   const test = new Test({
     _id: mongoose.Types.ObjectId(),
     givenAnswers: req.body.givenAnswers,
-    questions: req.body.questions
+    questions: req.body.questions,
+    user: req.body.user
   })
   test
     .save()
@@ -32,6 +33,8 @@ router.route('/add-test-to-user').post((req, res) => {
 
 router.route('/:id').get((req, res) => {
   Test.findById(req.params.id)
+    .populate('questions.question')
+    .exec()
     .then(test => res.json(test))
     .catch(err => res.status(400).json('Error: ' + err));
 });

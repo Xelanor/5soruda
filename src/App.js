@@ -16,6 +16,7 @@ import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./containers/Dashboard/Dashboard";
 import Test from './containers/Test/Test'
 import CreateQuestion from './containers/Admin/CreateQuestion'
+import ViewTest from './containers/Test/ViewTest/ViewTest'
 
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
@@ -51,6 +52,7 @@ class App extends Component {
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute exact path="/demo" component={Test} />
               <PrivateRoute exact path="/new-question" component={CreateQuestion} />
+              <PrivateRoute exact path="/test-goruntule/:id" component={ViewTest} />
             </Switch>
           </div>
         </Router>
