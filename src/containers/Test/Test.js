@@ -35,8 +35,6 @@ class Test extends Component {
       updatedGivenAnswers: updatedGivenAnswers
     }
 
-    console.log(updatedGivenAnswers)
-
     axios.post('/api/tests/update-answers/' + this.state.testId, givenAnswers)
       .then(res => console.log(res))
       .catch((error) => { console.log(error); })
